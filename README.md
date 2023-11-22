@@ -103,16 +103,21 @@ data['gameRounds'][i]['frames'][j]['ct']['player'][k]  # CT side
 __Collection__: \
 
 Team
-
+```
+[{'team': 'FaZe Clan'}, {'team': 'Team Liquid'}]
+```
 
 Player
+```
+ [{'name': 'ropz', 'steam_id': 76561197991272318}, ...]
+```
 
 Match
 ```
-{ 'matchID': 'Liquid-Faze-BLAST2022',   #can be designed by ourselves
+[{ 'matchID': 'Liquid-Faze-BLAST2022',   #can be designed by ourselves
   'mapName': 'de_mirage', 
   'team1': 'FaZe Clan', 
-  'team2': 'Team Liquid'}
+  'team2': 'Team Liquid'}]
 ```
 
 Round 
