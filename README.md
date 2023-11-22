@@ -6,7 +6,7 @@
   "raw data"
   </span>
   read from the json file.
-:q
+
     > data = json.load(file)
 
 Here list the attributes in the json file:
@@ -42,15 +42,16 @@ Here list the attributes in the __*"gameRounds"*__ branch:
 > 'startTick','endTick', 'bombPlantTick',
 > 'tScore', 'ctScore', 'endTScore', 'endCTScore', 'winningTeam', 'losingTeam', 'roundEndReason',
 > 'ctBuyType', 'tBuyType',\
-> __'frames'__ ========> important
+> __'frames'__ ========> important 
 > 
 > __some redundant info__:\
 > 'isWarmup',\
 >  'freezeTimeEndTick',  'endOfficialTick',  \
 > 'ctTeam', 'tTeam', 'winningSide', 
 > 'ctFreezeTimeEndEqVal', 'ctRoundStartEqVal', 'ctRoundSpendMoney', 
-> 'tFreezeTimeEndEqVal', 'tRoundStartEqVal', 'tRoundSpendMoney','ctSide', 'tSide', 'bombEvents',
+> 'tFreezeTimeEndEqVal', 'tRoundStartEqVal', 'tRoundSpendMoney','ctSide', 'tSide',
 > 'grenades', 'flashes', \
+> 'bombEvents'， \
 > 'kills', 'damages',  'weaponFires' =============> relatively long
 
 
@@ -61,8 +62,63 @@ Here list the attributes in the __*"gameRounds"*__ branch:
 data['gameRounds'][i]['frames'][j]              #j_th frame of i_th round
 ```
 
+Here list the attributes in __*frames*__ branch:
+>__Important information__:\
+> 't', 'ct' \
+> 'bomb',    ===============> bomb coordinate\
+> 'clockTime', 'tick', 'seconds',
+> 
+>__some Redundant information__:\
+> 'isKillFrame',  'bombPlanted', 
+> 'bombsite',  'projectiles', 'smokes', 'fires' \
+
+
+
+### __player information__
+```
+data['gameRounds'][i]['frames'][j]['t']['player'][k]  # T side
+data['gameRounds'][i]['frames'][j]['ct']['player'][k]  # CT side              
+```
+>__Important information__:\
+> 'x', 'y', 'z', \
+> 'velocityX', 'velocityY', 'velocityZ',\
+> 'viewX', 'viewY', 
+> 'hp', 'armor', 'hasHelmet', 'hasDefuse',
+> 'activeWeapon', 
+> 'flashGrenades', 'smokeGrenades', 'heGrenades', 'fireGrenades',
+>  'hasBomb'
+> 
+>__some Redundant information__:\
+> 'steamID', 'name', 'team', 'side',  'eyeX', 'eyeY','eyeZ',
+> 'totalUtility', 'lastPlaceName', 'isAlive', 'isBot', 
+> 'isBlinded', 'isAirborne', 'isDucking', 'isDuckingInProgress', 
+> 'isUnDuckingInProgress', 'isDefusing', 'isPlanting', 'isReloading', 
+> 'isInBombZone', 'isInBuyZone', 'isStanding', 'isScoped', 'isWalking', 
+> 'isUnknown', 'inventory', 'spotters', 'equipmentValue', 
+> 'equipmentValueFreezetimeEnd', 'equipmentValueRoundStart', 
+> 'cash', 'cashSpendThisRound', 'cashSpendTotal','ping', 'zoomLevel' 
 
 ## Database Structure Design
 
+__Collection__: \
+
+Team
+
+
+Player
+
+Match
+```
+{ 'matchID': 'Liquid-Faze-BLAST2022',   #can be designed by ourselves
+  'mapName': 'de_mirage', 
+  'team1': 'FaZe Clan', 
+  'team2': 'Team Liquid'}
+```
+
+Round 
+
+Kill
+
+Frame
 
 
