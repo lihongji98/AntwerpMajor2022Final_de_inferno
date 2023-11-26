@@ -14,8 +14,8 @@ class Team(meng.DynamicDocument):
 class Match(meng.DynamicDocument):
     matchID = StringField(required=True, unique=True)
     mapName = StringField()
-    team1 = StringField(required=True)
-    team2 = StringField(required=True)
+    team1 = ReferenceField(Team, required=True)
+    team2 = ReferenceField(Team, required=True)
 
     meta = {
         'indexes': ['matchID', 'team1', 'team2'],
@@ -26,9 +26,85 @@ class Match(meng.DynamicDocument):
 class Player(meng.DynamicDocument):
     player_name = StringField(required=True, unique=True)
     steam_id = IntField(required=True)
-    team = StringField()
+    team = ReferenceField(Team)
 
     meta = {
         'indexes': ['player_name', 'steam_id'],
+        'db_alias': 'default'
+    }
+
+
+class Round(meng.DynamicDocument):
+    matchID = ReferenceField(Match)
+    ronudNum = IntField()
+    startTick = IntField()
+    endTick = IntField()
+    bombPlantTick = IntField()
+    tScore = IntField()
+    ctScore = IntField()
+    winningTeam = StringField()
+    losingTeam = StringField()
+    roundEndReason = StringField()
+    ctBuyType = StringField()
+    tBuyType = StringField()
+
+    meta = {
+        'indexes': ['player_name', 'steam_id'],
+        'db_alias': 'default'
+    }
+
+
+class Frag(meng.DynamicDocument):
+    matchID = ReferenceField(Match)
+    roundNum = IntField()
+    seconds = FloatField()
+    attackerName = StringField()
+    attackerX, attackerY, attackerZ = FloatField(), FloatField(), FloatField()
+    attackerViewX, attackerViewY = FloatField(), FloatField()
+    victimName = StringField()
+    victimX, victimY, victimZ = FloatField(), FloatField(), FloatField()
+    victimViewX, victimViewY = FloatField(), FloatField()
+    distance = FloatField()
+    isFirstKill = BooleanField()
+    isHeadshot = BooleanField()
+    weapon, weaponClass = StringField(), StringField()
+
+    meta = {
+        'indexes': ['matchID', 'roundNum', 'attackerName', 'victimName'],
+        'db_alias': 'default'
+    }
+
+
+class OnePlayerFrame(meng.EmbeddedDocument):
+    playerName = StringField()
+    playerX, playerY, playerZ = FloatField(), FloatField(), FloatField()
+    velocityX, velocityY, velocityZ = FloatField(), FloatField(), FloatField()
+    viewX, viewY = FloatField(), FloatField()
+    hp, armor, hasHelmet, hasDefuse = IntField(), IntField(), BooleanField(), BooleanField()
+    activeWeapon = StringField()
+    flash, smoke, grenade, incendiary = IntField(), IntField(), IntField(), IntField()
+
+
+class TeamFrame(meng.EmbeddedDocument):
+    teamName = StringField()
+    playerFrameDict = ListField(field=EmbeddedDocumentField(OnePlayerFrame))
+
+
+class BombCoordinates(meng.EmbeddedDocument):
+    x = FloatField()
+    y = FloatField()
+    z = FloatField()
+
+
+class Frame(meng.DynamicDocument):
+    matchID = ReferenceField(Match)
+    roundNum = IntField()
+    seconds = FloatField()
+    bomb = EmbeddedDocumentField(BombCoordinates)
+    team1FrameDict = EmbeddedDocumentField(TeamFrame)
+    team2FrameDict = EmbeddedDocumentField(TeamFrame)
+
+    meta = {
+        'indexes': ['matchID', 'roundNum'],
         'db_alias': 'default'
     }

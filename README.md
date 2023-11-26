@@ -40,13 +40,14 @@ Here list the attributes in the __*"gameRounds"*__ branch:
 > __Important info__ :\
 > 'roundNum', 
 > 'startTick','endTick', 'bombPlantTick',
-> 'tScore', 'ctScore', 'endTScore', 'endCTScore', 'winningTeam', 'losingTeam', 'roundEndReason',
+> 'tScore', 'ctScore', 'winningTeam', 'losingTeam', 'roundEndReason',
 > 'ctBuyType', 'tBuyType',\
 > __'frames'__ ========> important 
 > 
 > __some redundant info__:\
 > 'isWarmup',\
 >  'freezeTimeEndTick',  'endOfficialTick',  \
+>  'endTScore', 'endCTScore', \
 > 'ctTeam', 'tTeam', 'winningSide', 
 > 'ctFreezeTimeEndEqVal', 'ctRoundStartEqVal', 'ctRoundSpendMoney', 
 > 'tFreezeTimeEndEqVal', 'tRoundStartEqVal', 'tRoundSpendMoney','ctSide', 'tSide',
@@ -54,7 +55,34 @@ Here list the attributes in the __*"gameRounds"*__ branch:
 > 'bombEvents'， \
 > 'kills', 'damages',  'weaponFires' =============> relatively long
 
+### __Frag_info__
+This is a collection which contains information of "kills".
+```
+data['gameRounds'][i][kills]
+```
 
+
+Here list the attributes in __*frag*__ branch:
+>>__Important information__:\
+> 'seconds', 'clockTime',  
+> 'attackerName', 'attackerX', 'attackerY', 'attackerZ', 'attackerViewX', 'attackerViewY', 
+> 'victimName', 'victimX', 'victimY', 'victimZ', 'victimViewX', 'victimViewY', 
+> 'distance', 
+> 'isFirstKill', 'isHeadshot',
+> 'weapon', 'weaponClass'
+> 
+>__some Redundant information__:\
+> 'tick', 
+> 'attackerSteamID', 'attackerTeam', 'attackerSide',
+> 'victimSteamID', 'victimTeam', 'victimSide',
+> 'assisterSteamID', 'assisterName', 'assisterTeam', 'assisterSide', 
+> 'isSuicide', 'isTeamkill', 'isWallbang', 'penetratedObjects', 
+> 'victimBlinded', 'attackerBlinded', 
+> 'flashThrowerSteamID', 'flashThrowerName', 'flashThrowerTeam', 'flashThrowerSide',
+> 'noScope', 'thruSmoke', 
+> 
+> 'isTrade', 'playerTradedName', 'playerTradedTeam', 'playerTradedSteamID', 'playerTradedSide', 
+> 
 
 ### __Frame_info__
 
@@ -66,11 +94,12 @@ Here list the attributes in __*frames*__ branch:
 >__Important information__:\
 > 't', 'ct' \
 > 'bomb',    ===============> bomb coordinate\
-> 'clockTime', 'tick', 'seconds',
+> 'tick', 'seconds',
 > 
 >__some Redundant information__:\
+> 'tick'
 > 'isKillFrame',  'bombPlanted', 
-> 'bombsite',  'projectiles', 'smokes', 'fires' \
+> 'clockTime', 'bombsite',  'projectiles', 'smokes', 'fires' \
 
 
 
@@ -97,6 +126,31 @@ data['gameRounds'][i]['frames'][j]['ct']['player'][k]  # CT side
 > 'isUnknown', 'inventory', 'spotters', 'equipmentValue', 
 > 'equipmentValueFreezetimeEnd', 'equipmentValueRoundStart', 
 > 'cash', 'cashSpendThisRound', 'cashSpendTotal','ping', 'zoomLevel' 
+
+in TeamFrame:
+>__Important information__:\
+> 'name', \
+> 'x', 'y', 'z',\
+> 'velocityX', 'velocityY', 'velocityZ'\
+> 'viewX', 'viewY'\
+> 'hp', 'armor', 'activeWeapon', 'flashGrenades', 'smokeGrenades', 'heGrenades', 'fireGrenades',\
+> 'isAlive', 'hasHelmet', 'hasDefuse'
+> 
+>__some Redundant information__:\
+> 'steamID', 'team', 'side',
+> 'eyeX', 'eyeY', 'eyeZ',
+> 'viewX', 'viewY',
+> 'totalUtility', 'lastPlaceName', 'isAlive',
+> 'isBot', 'isBlinded',
+> 'isAirborne', 'isDucking', 'isDuckingInProgress', 'isUnDuckingInProgress',
+> 'isDefusing', 'isPlanting', 'isReloading', 'isInBombZone', 'isInBuyZone',
+> 'isStanding', 'isScoped', 'isWalking', 'isUnknown','inventory', 'spotters', 
+> 'equipmentValue', 'equipmentValueFreezetimeEnd', 'equipmentValueRoundStart', 
+> 'cash', 'cashSpendThisRound', 'cashSpendTotal', 
+>   'hasBomb', 'ping', 'zoomLevel'
+
+
+
 
 ## Database Structure Design
 
