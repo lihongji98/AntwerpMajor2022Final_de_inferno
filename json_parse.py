@@ -23,13 +23,19 @@ class JsonParser:
         """
         First get the general match information.
         """
-        general_info_keys = ['matchID', 'mapName']  # 'gameRounds'
-        match_info_dict = {}
-        for key in general_info_keys:
-            match_info_dict[key] = data[key]
+        # general_info_keys = ['matchID', 'mapName']
+        match_info_dict = {'Series': data['matchID'],
+                           'mapName': data['mapName']}
 
-        match_info_dict['team1'] = data['gameRounds'][0]['ctSide']['teamName']
-        match_info_dict['team2'] = data['gameRounds'][0]['tSide']['teamName']
+        if data['gameRounds'][-1]['endTScore'] > data['gameRounds'][-1]['endCTScore']:
+            team_win = data['gameRounds'][-1]['tSide']['teamName']
+            team_lose = data['gameRounds'][-1]['ctSide']['teamName']
+        else:
+            team_lose = data['gameRounds'][-1]['tSide']['teamName']
+            team_win = data['gameRounds'][-1]['ctSide']['teamName']
+
+        match_info_dict['teamWin'] = team_win
+        match_info_dict['teamLose'] = team_lose
         self.Matches.append(match_info_dict)
 
         """
@@ -142,8 +148,8 @@ class JsonParser:
         match_insert = False
 
         for item in self.Matches:
-            if database.Match.objects(matchID=item['matchID']).first():
-                print(f"The match with mathID '{item['matchID']}' is already in Match collection.")
+            if database.Match.objects(matchID=item['Series']).first():
+                print(f"The match with mathID '{item['Series']}' is already in Match collection.")
             else:
                 new_match = database.Match(**item)
                 new_match.save()
@@ -181,7 +187,10 @@ class JsonParser:
                 new_frame = database.Frame(**item)
                 new_frame.save()
 
-
-a = JsonParser()
-a.parse("D:/Liquid-Faze-BLAST2022.json")
-a.update()
+    def reset_attributes(self):
+        self.Matches = []
+        self.Teams = []
+        self.Players = []
+        self.Rounds = []
+        self.Frags = []
+        self.Frames = []

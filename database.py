@@ -12,13 +12,13 @@ class Team(meng.DynamicDocument):
 
 
 class Match(meng.DynamicDocument):
-    matchID = StringField(required=True, unique=True)
+    Series = StringField(required=True, unique=True)
     mapName = StringField()
-    team1 = ReferenceField(Team, required=True)
-    team2 = ReferenceField(Team, required=True)
+    teamWin = StringField(required=True)
+    teamLose = StringField(required=True)
 
     meta = {
-        'indexes': ['matchID', 'team1', 'team2'],
+        'indexes': ['Series', 'teamWin', 'teamLose'],
         'db_alias': 'default'
     }
 
