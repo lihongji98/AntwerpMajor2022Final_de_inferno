@@ -1,5 +1,4 @@
 import database
-import pandas as pd
 import numpy as np
 import mongoengine as mongo
 import matplotlib.pyplot as plt
@@ -132,4 +131,3 @@ class FrameVisualizer:
 
 
 a = FrameVisualizer()
-a.run()
