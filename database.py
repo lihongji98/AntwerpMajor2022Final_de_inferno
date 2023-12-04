@@ -6,13 +6,12 @@ class Team(meng.DynamicDocument):
     team = StringField(required=True, unique=True)
 
     meta = {
-        'indexes': ['team'],
         'db_alias': 'default'
     }
 
 
 class Match(meng.DynamicDocument):
-    Series = StringField(required=True, unique=True)
+    series = StringField(required=True, unique=True)
     mapName = StringField()
     teamWin = StringField(required=True)
     teamLose = StringField(required=True)
@@ -26,7 +25,7 @@ class Match(meng.DynamicDocument):
 class Player(meng.DynamicDocument):
     player_name = StringField(required=True, unique=True)
     steam_id = IntField(required=True)
-    team = ReferenceField(Team)
+    team = StringField()
 
     meta = {
         'indexes': ['player_name', 'steam_id'],
@@ -36,7 +35,7 @@ class Player(meng.DynamicDocument):
 
 class Round(meng.DynamicDocument):
     matchID = ReferenceField(Match)
-    ronudNum = IntField()
+    roundNum = IntField()
     startTick = IntField()
     endTick = IntField()
     bombPlantTick = IntField()

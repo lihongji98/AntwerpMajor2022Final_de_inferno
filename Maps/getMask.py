@@ -12,7 +12,7 @@ def get_map_mask(img_path):
         elif mapName == "inferno":
             paraList = [[6, 69, 36], [8, 22, 45], [74, 16, 33], [0, 300], [0, 300]]
         else:
-            ValueError("choose 'mirage' or 'inferno'!")
+            ValueError("choose 'inferno'!")
         for x in range(len(process_img)):
             for y in range(len(process_img[x])):
                 if (process_img[x][y][0] == paraList[0][0] and process_img[x][y][1] == paraList[0][1] and
@@ -42,5 +42,4 @@ def get_map_mask(img_path):
         json.dump(mask, json_file)
 
 
-get_map_mask("de_mirage.png")
-get_map_mask("de_inferno.png")
+get_map_mask("mapMetaData/de_inferno.png")

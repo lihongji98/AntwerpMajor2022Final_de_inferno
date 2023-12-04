@@ -8,5 +8,5 @@ if __name__ == '__main__':
     # This parameter only matters if parse_frames=True ()
     # For reference, MM demos are usually 64 ticks, and pro/FACEIT demos are usually 128 ticks.
     json_parser = JsonParser()
-    json_parser.parse("D:/Liquid-Faze-BLAST2022.json")
+    json_parser.parse(r"D:\PGL-Major-Antwerp-2022-faze-vs-natus-vincere-m1.json ")
     json_parser.update()

@@ -24,7 +24,7 @@ class JsonParser:
         First get the general match information.
         """
         # general_info_keys = ['matchID', 'mapName']
-        match_info_dict = {'Series': data['matchID'],
+        match_info_dict = {'series': data['matchID'],
                            'mapName': data['mapName']}
 
         if data['gameRounds'][-1]['endTScore'] > data['gameRounds'][-1]['endCTScore']:
@@ -148,8 +148,8 @@ class JsonParser:
         match_insert = False
 
         for item in self.Matches:
-            if database.Match.objects(matchID=item['Series']).first():
-                print(f"The match with mathID '{item['Series']}' is already in Match collection.")
+            if database.Match.objects(matchID=item['series']).first():
+                print(f"The match with mathID '{item['series']}' is already in Match collection.")
             else:
                 new_match = database.Match(**item)
                 new_match.save()
