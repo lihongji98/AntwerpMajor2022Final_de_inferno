@@ -1,33 +1,23 @@
-import tkinter as tk
-from PIL import Image, ImageTk  # 需要安装 Pillow 库
+import matplotlib.pyplot as plt
+import numpy as np
 
-def on_selection_change(*args):
-    selected_indices = listbox.curselection()
-    selected_images = [images[index] for index in selected_indices]
-    print("Selected images:", selected_images)
+# 数据
+categories = ['Category 1', 'Category 2', 'Category 3', 'Category 4', 'Category 5', 'Category 6']
+data = [4, 3, 5, 2, 4, 9]
 
-root = tk.Tk()
-root.title("Multiple Images Selection Example")
+fig, ax = plt.subplots(subplot_kw=dict(polar=True))
+theta = np.linspace(0, 2*np.pi, len(categories), endpoint=False)
+data += data[:1]
+theta = np.concatenate((theta, [theta[0]]))
 
-# 使用 Pillow 打开多张图片
-images = [
-    Image.open("icons/faze/ropz.png"),
-    Image.open("icons/faze/twistzz.png"),
-    Image.open("icons/faze/rain.png"),
-    # Add more image paths as needed
-]
+ax.plot(theta, data, label='Data')
+ax.fill(theta, data, alpha=0.25)
 
-photo_list = [ImageTk.PhotoImage(image) for image in images]
+ax.set_xticks(theta[:-1])
+ax.set_xticklabels(categories)
 
-# 创建 Listbox
-listbox = tk.Listbox(root, selectmode=tk.MULTIPLE)
-listbox.pack()
+# 显示图例
+ax.legend()
 
-# 将图片添加到 Listbox
-for i, photo in enumerate(photo_list):
-    listbox.insert(tk.END, f"Image {i+1}")
-
-# 绑定选择变化的事件
-listbox.bind("<<ListboxSelect>>", on_selection_change)
-
-root.mainloop()
+# 显示雷达图
+plt.show()
