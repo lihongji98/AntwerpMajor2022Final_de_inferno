@@ -2,7 +2,7 @@ import tkinter as tk
 
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
-from __init__ import Config
+from config import Config
 from PIL import Image, ImageTk, ImageDraw
 
 

@@ -1,7 +1,7 @@
 import tkinter as tk
 import functools
-from __init__ import Config, MatchInfo, faze_players, navi_players
-from __init__ import faze_player_stats, navi_player_stats
+from config import Config, MatchInfo, faze_players, navi_players
+from config import faze_player_stats, navi_player_stats
 from util import create_map, create_circle_image, center_window
 from function import show_player_stats, show_heatmap, show_frags, show_weapon_stats, show_others
 from PIL import Image, ImageTk, ImageDraw
@@ -86,8 +86,8 @@ if __name__ == '__main__':
     faze_team_label = create_team_label(left_frame, "FaZe", MatchInfo.faze_logo_path, Config.team_icon_size, "left")
     navi_team_label = create_team_label(right_frame, "Na'Vi", MatchInfo.navi_logo_path, Config.team_icon_size, "right")
 
-    faze_player_labels = create_player_labels(window, faze_team_label, MatchInfo.faze_paths, Config.player_icon_size, "faze")
-    navi_player_labels = create_player_labels(window, navi_team_label, MatchInfo.navi_paths, Config.player_icon_size, "navi")
+    faze_player_labels = create_player_labels(left_frame, faze_team_label, MatchInfo.faze_paths, Config.player_icon_size, "faze")
+    navi_player_labels = create_player_labels(right_frame, navi_team_label, MatchInfo.navi_paths, Config.player_icon_size, "navi")
 
     major_image_label = create_major_icon(window, MatchInfo.major_path, size=[500, 140])
 

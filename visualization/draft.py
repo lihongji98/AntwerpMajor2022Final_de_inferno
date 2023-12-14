@@ -1,23 +1,29 @@
-import matplotlib.pyplot as plt
 import numpy as np
+import matplotlib.pyplot as plt
 
-# 数据
-categories = ['Category 1', 'Category 2', 'Category 3', 'Category 4', 'Category 5', 'Category 6']
-data = [4, 3, 5, 2, 4, 9]
 
-fig, ax = plt.subplots(subplot_kw=dict(polar=True))
-theta = np.linspace(0, 2*np.pi, len(categories), endpoint=False)
-data += data[:1]
-theta = np.concatenate((theta, [theta[0]]))
+def gaussian_distribution(x, y, mu_x, mu_y, sigma_x, sigma_y):
+    exponent = -0.5 * ((x - mu_x) ** 2 / sigma_x ** 2 + (y - mu_y) ** 2 / sigma_y ** 2)
+    return np.exp(exponent) / (2 * np.pi * sigma_x * sigma_y)
 
-ax.plot(theta, data, label='Data')
-ax.fill(theta, data, alpha=0.25)
 
-ax.set_xticks(theta[:-1])
-ax.set_xticklabels(categories)
+# 定义高斯分布的参数
+mu_x, mu_y = 0, 0  # 圆心的坐标
+sigma_x, sigma_y = 50, 50  # 标准差
 
-# 显示图例
-ax.legend()
+# 生成二维平面上的点
+x = np.linspace(0, 1024, 1024)
+y = np.linspace(0, 1024, 1024)
+x, y = np.meshgrid(x, y)
 
-# 显示雷达图
+# 计算每个点上的高斯分布值
+z = gaussian_distribution(x, y, mu_x, mu_y, sigma_x, sigma_y)
+print(z)
+# 画图
+plt.imshow(z, origin='lower', cmap='coolwarm')
+plt.colorbar(label='Probability Density')
+plt.xlabel('X')
+plt.ylabel('Y')
+plt.title('Gaussian Distribution')
+
 plt.show()

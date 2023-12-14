@@ -1,4 +1,4 @@
-from __init__ import faze_player_stats, navi_player_stats, faze_players, navi_players
+from config import faze_player_stats, navi_player_stats, faze_players, navi_players
 import numpy as np
 import matplotlib.pyplot as plt
 

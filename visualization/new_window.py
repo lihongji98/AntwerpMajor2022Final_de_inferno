@@ -3,7 +3,7 @@ from tkinter import ttk
 
 from PIL import Image, ImageTk, ImageDraw
 
-from visualization import Config, MatchInfo, faze_players, navi_players, metrics
+from visualization.config import Config, MatchInfo, faze_players, navi_players, metrics
 from visualization.util import center_window, create_circle_image
 from util import create_map
 from function import show_player_stats
@@ -117,7 +117,8 @@ def create_team_buttons(frame, team_name, logo_path, size, x, y):
     team_label.image = team_logo
 
     team_label.place(x=x, y=y)
-    team_label.bind("<Button-1>", lambda event, team=team_label.cget("text"): team_button(team))
+    team_label.bind("<Button-1>",
+                    lambda event, team=team_label.cget("text"): team_button(team))
 
     return team_label
 
@@ -143,7 +144,8 @@ def create_player_buttons(frame, image_paths, size, x, y, metric_combobox):
         player_id = path[11:-4]
         icon = create_circle_image(path, size)
         player_button_frame = tk.Label(frame, relief="solid", image=icon, text=player_id, compound=tk.TOP,
-                                       padx=10, pady=20, bg=Config.bg_color,
+                                       padx=frame.winfo_height() / 100, pady=frame.winfo_width() / 2,
+                                       bg=Config.bg_color,
                                        fg=Config.fg_color, font=Config.player_font)
         player_button_frame.image = icon
         player_button_frame.place(x=x, y=y + i * 135)
@@ -173,15 +175,15 @@ if __name__ == '__main__':
     center_window(window, Config.window_height, Config.window_width)
     window.configure(bg=Config.bg_color)
 
-    faze_team_label = create_team_buttons(window, "FaZe", MatchInfo.faze_logo_path, Config.team_icon_size, 50, 0)
-    navi_team_label = create_team_buttons(window, "Na'Vi", MatchInfo.navi_logo_path, Config.team_icon_size, 1020, 0)
-
     major_image_label = create_major_buttons(window, MatchInfo.major_path, size=[500, 140])
 
     result_label = tk.Label(window, text="", font=Config.player_font, fg=Config.fg_color, bg=Config.bg_color)
     result_label.pack(pady=0)
 
     metric_slider = create_slider(window, metrics)
+
+    faze_team_label = create_team_buttons(window, "FaZe", MatchInfo.faze_logo_path, Config.team_icon_size, 50, 0)
+    navi_team_label = create_team_buttons(window, "Na'Vi", MatchInfo.navi_logo_path, Config.team_icon_size, 1020, 0)
 
     faze_player_labels = create_player_buttons(window, MatchInfo.faze_paths, Config.player_icon_size,
                                                100, 230, metric_slider)
