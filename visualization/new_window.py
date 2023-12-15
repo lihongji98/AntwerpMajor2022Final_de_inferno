@@ -6,7 +6,7 @@ from PIL import Image, ImageTk, ImageDraw
 from visualization.config import Config, MatchInfo, faze_players, navi_players, metrics
 from visualization.util import center_window, create_circle_image
 from util import create_map
-from function import show_player_stats
+from function import show_player_stats, show_T_heatmap, show_CT_heatmap
 
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
@@ -47,12 +47,22 @@ def check_conditions(player, metric, frame):
         canvas_widget.pack(pady=80)
 
     elif metric.get() == metrics[1]:
-        print("heatmap")
+        T_heatmap = show_T_heatmap(faze_player_clicked, navi_player_clicked)
+        canvas = FigureCanvasTkAgg(T_heatmap, master=frame)
+        canvas_widget = canvas.get_tk_widget()
+        center_window(frame, Config.window_height, Config.window_width)
+        canvas_widget.place(x=Config.window_height // 2 - Config.inferno_size // 2,
+                            y=Config.window_width // 2 - Config.inferno_size // 2 + 100)
+
     elif metric.get() == metrics[2]:
-        pass
+        CT_heatmap = show_CT_heatmap(faze_player_clicked, navi_player_clicked)
+        canvas = FigureCanvasTkAgg(CT_heatmap, master=frame)
+        canvas_widget = canvas.get_tk_widget()
+        center_window(frame, Config.window_height, Config.window_width)
+        canvas_widget.place(x=Config.window_height // 2 - Config.inferno_size // 2,
+                            y=Config.window_width // 2 - Config.inferno_size // 2 + 100)
+
     elif metric.get() == metrics[3]:
-        pass
-    elif metric.get() == metrics[4]:
         pass
     else:
         ValueError("Invalid metric!")
@@ -63,30 +73,24 @@ def on_metric_change(event, frame):
     selected_metric = event.widget.get()
     print('the selected metric is ' + selected_metric)
     # ["Player_Stats", "Heatmap", "Frags", "Weapon_Stats", "Others"]
-    if selected_metric == 'Player_Stats':
+    if selected_metric == metrics[0]:
         if map_fig is not None:
             map_fig.destroy()
             map_fig = None
         faze_player_clicked = {faze_players[i]: False for i in range(len(faze_players))}
         navi_player_clicked = {navi_players[i]: False for i in range(len(navi_players))}
 
-    elif selected_metric == 'Heatmap':
+    elif selected_metric == metrics[1]:
         if map_fig is None:
             map_fig = create_map(frame, MatchInfo.map_path, map_size=Config.inferno_size)
 
-    elif selected_metric == 'Frags':
+    elif selected_metric == metrics[2]:
         if map_fig is None:
             map_fig = create_map(frame, MatchInfo.map_path, map_size=Config.inferno_size)
 
-    elif selected_metric == 'Weapon_Stats':
-        if map_fig is not None:
-            map_fig.destroy()
-            map_fig = None
-
-    elif selected_metric == 'Others':
-        if map_fig is not None:
-            map_fig.destroy()
-            map_fig = None
+    elif selected_metric == metrics[3]:
+        if map_fig is None:
+            map_fig = create_map(frame, MatchInfo.map_path, map_size=Config.inferno_size)
 
     else:
         ValueError("Invalid metric!")

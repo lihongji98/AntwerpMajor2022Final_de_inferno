@@ -5,7 +5,7 @@ from bson import ObjectId
 faze_players = ["karrigan", "rain", "broky", "twistzz", "ropz"]
 navi_players = ["boombl4", "electronic", "simple", "bit", "perfecto"]
 
-metrics = ["Player_Stats", "Heatmap", "Frags", "Weapon_Stats", "Others"]
+metrics = ["Player_Stats", "T_Heatmap", "CT_Heatmap", "Frags"]
 
 
 class Config(object):
