@@ -49,7 +49,7 @@ def show_player_stats(faze_player_clicked, navi_player_clicked):
 
 
 def plot_heatmap(heatmap):
-    plt.style.use('dark_background')
+    # plt.style.use('dark_background')
     background_image = plt.imread(r"D:\pycharm_projects\CSGO_Analytics\Maps\mapMetaData\de_inferno.png")
     fig, ax = plt.subplots(figsize=(7.45, 7.45))
 

@@ -50,6 +50,7 @@ navi_player_stats = {"boombl4": [1.02, 0.63, 0.741, 0.88, 68.2 / 100, 0.6],
 faze_stats = np.array(list(faze_player_stats.values()))
 navi_stats = np.array(list(navi_player_stats.values()))
 total_stats = np.concatenate((faze_stats, navi_stats), axis=0).T
+total_stats[1] = 1 - total_stats[1]
 for i in range(len(total_stats)):
     max_stat, min_stat = np.max(total_stats[i]), np.min(total_stats[i]) - 0.2
     total_stats[i] = (total_stats[i] - min_stat) / (max_stat - min_stat)

@@ -12,6 +12,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 canvas_widget = None
 map_fig = None
+player_chosen = []
 faze_player_clicked = {faze_players[i]: False for i in range(len(faze_players))}
 navi_player_clicked = {navi_players[i]: False for i in range(len(navi_players))}
 
@@ -24,11 +25,14 @@ def clean_widget():
 
 
 def check_conditions(player, metric, frame):
-    global canvas_widget, faze_player_clicked, navi_player_clicked
+    global canvas_widget, faze_player_clicked, navi_player_clicked, player_chosen
 
     clean_widget()
-
-    result_label.config(text=f"{metric.get()} and {player}")
+    if player not in player_chosen:
+        player_chosen.append(player)
+    else:
+        player_chosen.remove(player)
+    result_label.config(text=f"{metric.get()} and {player_chosen}")
 
     if player in faze_player_clicked.keys():
         faze_player_clicked[player] = False if faze_player_clicked[player] else True
@@ -69,7 +73,7 @@ def check_conditions(player, metric, frame):
 
 
 def on_metric_change(event, frame):
-    global canvas_widget, map_fig, faze_player_clicked, navi_player_clicked
+    global canvas_widget, map_fig, faze_player_clicked, navi_player_clicked, player_chosen
     selected_metric = event.widget.get()
     print('the selected metric is ' + selected_metric)
     # ["Player_Stats", "Heatmap", "Frags", "Weapon_Stats", "Others"]
@@ -79,14 +83,21 @@ def on_metric_change(event, frame):
             map_fig = None
         faze_player_clicked = {faze_players[i]: False for i in range(len(faze_players))}
         navi_player_clicked = {navi_players[i]: False for i in range(len(navi_players))}
+        player_chosen = []
 
     elif selected_metric == metrics[1]:
         if map_fig is None:
             map_fig = create_map(frame, MatchInfo.map_path, map_size=Config.inferno_size)
+        faze_player_clicked = {faze_players[i]: False for i in range(len(faze_players))}
+        navi_player_clicked = {navi_players[i]: False for i in range(len(navi_players))}
+        player_chosen =[]
 
     elif selected_metric == metrics[2]:
         if map_fig is None:
             map_fig = create_map(frame, MatchInfo.map_path, map_size=Config.inferno_size)
+        faze_player_clicked = {faze_players[i]: False for i in range(len(faze_players))}
+        navi_player_clicked = {navi_players[i]: False for i in range(len(navi_players))}
+        player_chosen = []
 
     elif selected_metric == metrics[3]:
         if map_fig is None:
@@ -148,7 +159,7 @@ def create_player_buttons(frame, image_paths, size, x, y, metric_combobox):
         player_id = path[11:-4]
         icon = create_circle_image(path, size)
         player_button_frame = tk.Label(frame, relief="solid", image=icon, text=player_id, compound=tk.TOP,
-                                       padx=frame.winfo_height() / 100, pady=frame.winfo_width() / 2,
+                                       padx=0, pady=0,
                                        bg=Config.bg_color,
                                        fg=Config.fg_color, font=Config.player_font)
         player_button_frame.image = icon
