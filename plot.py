@@ -147,7 +147,7 @@ class FrameVisualizer:
     def draw_banana_block(self):
         NAV_CSV = pd.read_csv("Maps/mapMetaData/area_info.csv")
         NAV_CSV.areaName = NAV_CSV.areaName.fillna("")
-        NAV_CSV = NAV_CSV[NAV_CSV["areaId"] == 1][["northWestX", "northWestY", "southEastX", "southEastY"]] # 205, 1625
+        NAV_CSV = NAV_CSV[NAV_CSV["areaName"] == "Banana"][["northWestX", "northWestY", "southEastX", "southEastY"]] # 205, 1625
         NAV_CSV["northWestX"] = (NAV_CSV["northWestX"] - self.inferno_parameter["pos_x"]) / self.inferno_parameter[
             'scale']
         NAV_CSV["southEastX"] = (NAV_CSV["southEastX"] - self.inferno_parameter["pos_x"]) / self.inferno_parameter[
@@ -180,4 +180,4 @@ class FrameVisualizer:
 
 
 a = FrameVisualizer()
-a.run()
+a.draw_banana_block()

@@ -1,6 +1,7 @@
-from config import faze_player_stats, navi_player_stats, faze_players, navi_players
+from config import faze_player_stats, navi_player_stats, MatchInfo
 import numpy as np
 from data import map_scale_parameter, faze_T, faze_CT, navi_T, navi_CT, map_mask
+from data import frags_data
 import matplotlib.pyplot as plt
 
 
@@ -49,8 +50,8 @@ def show_player_stats(faze_player_clicked, navi_player_clicked):
 
 
 def plot_heatmap(heatmap):
-    # plt.style.use('dark_background')
-    background_image = plt.imread(r"D:\pycharm_projects\CSGO_Analytics\Maps\mapMetaData\de_inferno.png")
+    plt.style.use('default')
+    background_image = plt.imread(MatchInfo.map_path)
     fig, ax = plt.subplots(figsize=(7.45, 7.45))
 
     mask = np.ma.masked_where(heatmap == 0.00, heatmap)
@@ -60,7 +61,7 @@ def plot_heatmap(heatmap):
     heatmap_rgba[..., 3] = alpha_values
 
     ax.imshow(background_image, zorder=0, alpha=1)
-    ax.imshow(heatmap_rgba, origin='lower', cmap='coolwarm') #alpha=0.85)
+    ax.imshow(heatmap_rgba, origin='lower', cmap='coolwarm')  # alpha=0.85)
     ax.set_ylim(ax.get_ylim()[::-1])
     ax.get_xaxis().set_visible(b=False)
     ax.get_yaxis().set_visible(b=False)
@@ -69,10 +70,16 @@ def plot_heatmap(heatmap):
     return fig
 
 
-def position_scaling(x, y):
+def position_scaling_int(x, y):
     scaled_x = (x - map_scale_parameter["pos_x"]) / map_scale_parameter["scale"]
     scaled_y = (map_scale_parameter["pos_y"] - y) / map_scale_parameter["scale"]
     return round(scaled_x), round(scaled_y)
+
+
+def position_scaling_float(x, y):
+    scaled_x = (x - map_scale_parameter["pos_x"]) / map_scale_parameter["scale"]
+    scaled_y = (map_scale_parameter["pos_y"] - y) / map_scale_parameter["scale"]
+    return scaled_x, scaled_y
 
 
 def gaussian_distribution(x, y, mu_x, mu_y):
@@ -87,7 +94,7 @@ def compute_heat_map(tracking_data, heat_map, player_index):
     for player_pos_dict in tracking_data:
         for i, player in enumerate(player_pos_dict.keys()):
             if player_index == i:
-                player_x, player_y = position_scaling(player_pos_dict[player][0], player_pos_dict[player][1])
+                player_x, player_y = position_scaling_int(player_pos_dict[player][0], player_pos_dict[player][1])
                 player_hp = player_pos_dict[player][-1]
                 if player_hp != 0:
                     x = np.linspace(player_x - 50, player_x + 51, 101)
@@ -106,7 +113,7 @@ def show_T_heatmap(faze_player_clicked, navi_player_clicked):
     faze_heatmap = [np.zeros(shape=(1024, 1024)) for _ in range(5)]
     for player in faze_player_clicked.keys():
         if faze_player_clicked[player]:
-            if player == 'twistzz':
+            if player == 'Twistzz':
                 T_heatmaps.append(compute_heat_map(faze_T, faze_heatmap, 0))
             elif player == 'broky':
                 T_heatmaps.append(compute_heat_map(faze_T, faze_heatmap, 1))
@@ -120,15 +127,15 @@ def show_T_heatmap(faze_player_clicked, navi_player_clicked):
     navi_heatmap = [np.zeros(shape=(1024, 1024)) for _ in range(5)]
     for player in navi_player_clicked.keys():
         if navi_player_clicked[player]:
-            if player == 'boombl4':
+            if player == 'Boombl4':
                 T_heatmaps.append(compute_heat_map(navi_T, navi_heatmap, 0))
-            elif player == 'perfecto':
+            elif player == 'Perfecto':
                 T_heatmaps.append(compute_heat_map(navi_T, navi_heatmap, 1))
-            elif player == 'bit':
+            elif player == 'b1t':
                 T_heatmaps.append(compute_heat_map(navi_T, navi_heatmap, 2))
-            elif player == 'electronic':
+            elif player == 'electroNic':
                 T_heatmaps.append(compute_heat_map(navi_T, navi_heatmap, 3))
-            elif player == 'simple':
+            elif player == 's1mple':
                 T_heatmaps.append(compute_heat_map(navi_T, navi_heatmap, 4))
 
     T_heatmaps = np.array(T_heatmaps).reshape(-1, 1024, 1024)
@@ -144,7 +151,7 @@ def show_CT_heatmap(faze_player_clicked, navi_player_clicked):
     faze_heatmap = [np.zeros(shape=(1024, 1024)) for _ in range(5)]
     for player in faze_player_clicked.keys():
         if faze_player_clicked[player]:
-            if player == 'twistzz':
+            if player == 'Twistzz':
                 CT_heatmaps.append(compute_heat_map(faze_CT, faze_heatmap, 0))
             elif player == 'broky':
                 CT_heatmaps.append(compute_heat_map(faze_CT, faze_heatmap, 1))
@@ -158,15 +165,15 @@ def show_CT_heatmap(faze_player_clicked, navi_player_clicked):
     navi_heatmap = [np.zeros(shape=(1024, 1024)) for _ in range(5)]
     for player in navi_player_clicked.keys():
         if navi_player_clicked[player]:
-            if player == 'boombl4':
+            if player == 'Boombl4':
                 CT_heatmaps.append(compute_heat_map(navi_CT, navi_heatmap, 0))
-            elif player == 'perfecto':
+            elif player == 'Perfecto':
                 CT_heatmaps.append(compute_heat_map(navi_CT, navi_heatmap, 1))
-            elif player == 'bit':
+            elif player == 'b1t':
                 CT_heatmaps.append(compute_heat_map(navi_CT, navi_heatmap, 2))
-            elif player == 'electronic':
+            elif player == 'electroNic':
                 CT_heatmaps.append(compute_heat_map(navi_CT, navi_heatmap, 3))
-            elif player == 'simple':
+            elif player == 's1mple':
                 CT_heatmaps.append(compute_heat_map(navi_CT, navi_heatmap, 4))
 
     CT_heatmaps = np.array(CT_heatmaps).reshape(-1, 1024, 1024)
@@ -177,5 +184,60 @@ def show_CT_heatmap(faze_player_clicked, navi_player_clicked):
     return CT_heatmaps
 
 
-def show_frags():
-    print("show_frags")
+def plot_frag(frags):
+    plt.style.use('default')
+    frags = np.array(frags).reshape(-1, 5).T
+    attackerX, attackerY = position_scaling_float(np.array(frags[0], dtype=np.float32),
+                                                  np.array(frags[1], dtype=np.float32))
+    victimX, victimY = position_scaling_float(np.array(frags[2], dtype=np.float32),
+                                              np.array(frags[3], dtype=np.float32))
+
+    background_image = plt.imread(MatchInfo.map_path)
+    fig, ax = plt.subplots(figsize=(7.45, 7.45))
+    ax.imshow(background_image, zorder=0, alpha=1, origin="lower")
+    ax.scatter(attackerX, attackerY, color='b', zorder=5, marker='o')
+    ax.scatter(victimX, victimY, color='r', zorder=5, marker='x')
+    for aX, aY, vX, vY in zip(attackerX, attackerY, victimX, victimY):
+        plt.annotate('', xy=(vX, vY), xytext=(aX, aY),
+                     arrowprops=dict(facecolor='#FFFF00', linewidth=1, alpha=0.9, edgecolor='none', width=1))
+
+    ax.set_ylim(ax.get_ylim()[::-1])
+    ax.get_xaxis().set_visible(b=False)
+    ax.get_yaxis().set_visible(b=False)
+    plt.subplots_adjust(top=1, bottom=0, left=0, right=1, hspace=0, wspace=0)
+    plt.close(fig)
+    return fig
+
+
+def show_T_frags(faze_player_clicked, navi_player_clicked):
+    T_frags = []
+    for player in faze_player_clicked.keys():
+        if faze_player_clicked[player]:
+            player_frags = frags_data["faze_T"][player]
+            for i, frag in enumerate(player_frags):
+                T_frags.append(frag)
+    for player in navi_player_clicked.keys():
+        if navi_player_clicked[player]:
+            player_frags = frags_data["navi_T"][player]
+            for i, frag in enumerate(player_frags):
+                T_frags.append(frag)
+
+    fig = plot_frag(T_frags)
+    return fig
+
+
+def show_CT_frags(faze_player_clicked, navi_player_clicked):
+    CT_frags = []
+    for player in faze_player_clicked.keys():
+        if faze_player_clicked[player]:
+            player_frags = frags_data["faze_CT"][player]
+            for i, frag in enumerate(player_frags):
+                CT_frags.append(frag)
+    for player in navi_player_clicked.keys():
+        if navi_player_clicked[player]:
+            player_frags = frags_data["navi_CT"][player]
+            for i, frag in enumerate(player_frags):
+                CT_frags.append(frag)
+
+    fig = plot_frag(CT_frags)
+    return fig

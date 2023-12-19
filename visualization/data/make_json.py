@@ -6,10 +6,23 @@ from tqdm import tqdm
 from visualization.config import MatchInfo
 
 import database
+from visualization.config import faze_players, navi_players
 
 
 def connect_db():
     return mongo.connect(db="csgo", username="lihong", password="1998918!", host="localhost", port=27017)
+
+
+def get_team_player_info():
+    faze_player_list, navi_player_list = [], []
+    connect_db()
+    faze_players = database.Player.objects(team='FaZe Clan')
+    for player in faze_players:
+        faze_player_list.append(player.player_name)
+    navi_players = database.Player.objects(team="Natus Vincere")
+    for player in navi_players:
+        navi_player_list.append(player.player_name)
+    return faze_player_list, navi_player_list
 
 
 def get_frame_data(matchID):
@@ -71,8 +84,66 @@ def get_frame_data(matchID):
     return frame_data
 
 
-frame_data = get_frame_data(MatchInfo.matchID)
-file_path = "frame_data.json"
-# Write the dictionary to a JSON file
+def get_frag_data(matchID):
+    connect_db()
+    frag_T_faze_data = {faze_players[0]: [],
+                        faze_players[1]: [],
+                        faze_players[2]: [],
+                        faze_players[3]: [],
+                        faze_players[4]: []
+                        }
+
+    frag_T_navi_data = {navi_players[0]: [],
+                        navi_players[1]: [],
+                        navi_players[2]: [],
+                        navi_players[3]: [],
+                        navi_players[4]: []
+                        }
+
+    frag_CT_faze_data = {faze_players[0]: [],
+                         faze_players[1]: [],
+                         faze_players[2]: [],
+                         faze_players[3]: [],
+                         faze_players[4]: []
+                         }
+
+    frag_CT_navi_data = {navi_players[0]: [],
+                         navi_players[1]: [],
+                         navi_players[2]: [],
+                         navi_players[3]: [],
+                         navi_players[4]: []
+                         }
+
+    total_frags = database.Frag.objects(matchID=matchID)
+    round_counter = 0
+    for i, frag in enumerate(total_frags):
+        if 1 <= int(frag.roundNum) + 1 <= 15 or 34 <= int(frag.roundNum) + 1 <= 35:
+            frame_frag = [float(frag.attackerX), float(frag.attackerY),
+                          float(frag.victimX), float(frag.victimY),
+                          frag.weaponClass]
+            if frag.attackerName in faze_players: frag_T_faze_data[frag.attackerName].append(frame_frag)
+            else: frag_CT_navi_data[frag.attackerName].append(frame_frag)
+
+        elif 16 <= int(frag.roundNum) + 1 <= 30 or 31 <= int(frag.roundNum) + 1 <= 33:
+            frame_frag = [float(frag.attackerX), float(frag.attackerY),
+                          float(frag.victimX), float(frag.victimY),
+                          frag.weaponClass]
+            if frag.attackerName in faze_players: frag_CT_faze_data[frag.attackerName].append(frame_frag)
+            else: frag_T_navi_data[frag.attackerName].append(frame_frag)
+    return frag_T_faze_data, frag_T_navi_data, frag_CT_faze_data, frag_CT_navi_data
+
+
+# frame_data = get_frame_data(MatchInfo.matchID)
+# file_path = "frame_data.json"
+# with open(file_path, 'w') as json_file:
+#     json.dump(frame_data, json_file)
+
+faze_player_list, navi_player_list = get_team_player_info()
+frag_T_faze_data, frag_T_navi_data, frag_CT_faze_data, frag_CT_navi_data = get_frag_data(MatchInfo.matchID)
+frag_data = {"faze_T": frag_T_faze_data,
+             "faze_CT": frag_CT_faze_data,
+             "navi_T": frag_T_navi_data,
+             "navi_CT": frag_CT_navi_data}
+file_path = "frag_data.json"
 with open(file_path, 'w') as json_file:
-    json.dump(frame_data, json_file)
+    json.dump(frag_data, json_file)

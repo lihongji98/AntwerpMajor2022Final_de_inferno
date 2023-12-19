@@ -1,7 +1,5 @@
 import tkinter as tk
 
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-
 from config import Config
 from PIL import Image, ImageTk, ImageDraw
 
@@ -55,3 +53,14 @@ def center_window(window, width, height):
     y = (screen_height - height) // 2 - 50
 
     window.geometry(f"{width}x{height}+{x}+{y}")
+
+
+def create_overview(window, input_path):
+    map_fig = Image.open(input_path)
+    map_fig = map_fig.resize((615, 500), Image.LANCZOS)
+    map_fig = ImageTk.PhotoImage(map_fig)
+    map_label = tk.Label(window, image=map_fig, bg=Config.bg_color)
+    map_label.image = map_fig
+    map_label.place(x=Config.window_height // 2 - 615 // 2, y=Config.window_width // 2 - 500 // 2 + 100)
+
+    return map_label

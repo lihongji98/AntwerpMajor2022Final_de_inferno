@@ -1,5 +1,6 @@
 import json
-import PIL
+import PIL.Image
+import matplotlib.pyplot as plt
 import numpy as np
 
 
@@ -28,7 +29,7 @@ def get_map_mask(img_path):
                 process_img[x][y][0], process_img[x][y][1], process_img[x][y][2] = 0, 0, 0
         return process_img
 
-    img = process(img, img_path[3: -4])
+    img = process(img, "de_inferno")
 
     grey_image = np.array(PIL.Image.fromarray(img).convert("L"))
     for i in range(len(grey_image)):
@@ -42,4 +43,12 @@ def get_map_mask(img_path):
         json.dump(mask, json_file)
 
 
-get_map_mask("mapMetaData/de_inferno.png")
+# get_map_mask("mapMetaData/de_inferno.png")
+
+with open("D:\pycharm_projects\CSGO_Analytics\Maps\mapMetaData\infernoMask.json", ) as f:
+    # Load JSON data from file
+    data = json.load(f)
+
+data = np.array(data)
+plt.imshow(data, cmap="gray")
+plt.show()

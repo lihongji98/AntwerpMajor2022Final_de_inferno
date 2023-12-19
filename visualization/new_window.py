@@ -1,12 +1,12 @@
 import tkinter as tk
-from tkinter import ttk
+from tkinter.ttk import Label, Combobox
 
-from PIL import Image, ImageTk, ImageDraw
+from PIL import Image, ImageTk
 
-from visualization.config import Config, MatchInfo, faze_players, navi_players, metrics
-from visualization.util import center_window, create_circle_image
-from util import create_map
-from function import show_player_stats, show_T_heatmap, show_CT_heatmap
+from config import Config, MatchInfo, faze_players, navi_players, metrics
+from util import center_window, create_circle_image
+from util import create_map, create_overview
+from function import show_player_stats, show_T_heatmap, show_CT_heatmap, show_T_frags, show_CT_frags
 
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
@@ -32,7 +32,7 @@ def check_conditions(player, metric, frame):
         player_chosen.append(player)
     else:
         player_chosen.remove(player)
-    result_label.config(text=f"{metric.get()} and {player_chosen}")
+    result_label.config(text=f"{metric.get()}: {player_chosen}")
 
     if player in faze_player_clicked.keys():
         faze_player_clicked[player] = False if faze_player_clicked[player] else True
@@ -67,7 +67,24 @@ def check_conditions(player, metric, frame):
                             y=Config.window_width // 2 - Config.inferno_size // 2 + 100)
 
     elif metric.get() == metrics[3]:
-        pass
+        T_frags = show_T_frags(faze_player_clicked, navi_player_clicked)
+        canvas = FigureCanvasTkAgg(T_frags, master=frame)
+        canvas_widget = canvas.get_tk_widget()
+        center_window(frame, Config.window_height, Config.window_width)
+        canvas_widget.place(x=Config.window_height // 2 - Config.inferno_size // 2,
+                            y=Config.window_width // 2 - Config.inferno_size // 2 + 100)
+
+    elif metric.get() == metrics[4]:
+        CT_frags = show_CT_frags(faze_player_clicked, navi_player_clicked)
+        canvas = FigureCanvasTkAgg(CT_frags, master=frame)
+        canvas_widget = canvas.get_tk_widget()
+        center_window(frame, Config.window_height, Config.window_width)
+        canvas_widget.place(x=Config.window_height // 2 - Config.inferno_size // 2,
+                            y=Config.window_width // 2 - Config.inferno_size // 2 + 100)
+
+    elif metric.get() == metrics[5]:
+        _ = create_overview(frame, MatchInfo.overview_path)
+
     else:
         ValueError("Invalid metric!")
 
@@ -90,7 +107,7 @@ def on_metric_change(event, frame):
             map_fig = create_map(frame, MatchInfo.map_path, map_size=Config.inferno_size)
         faze_player_clicked = {faze_players[i]: False for i in range(len(faze_players))}
         navi_player_clicked = {navi_players[i]: False for i in range(len(navi_players))}
-        player_chosen =[]
+        player_chosen = []
 
     elif selected_metric == metrics[2]:
         if map_fig is None:
@@ -102,6 +119,24 @@ def on_metric_change(event, frame):
     elif selected_metric == metrics[3]:
         if map_fig is None:
             map_fig = create_map(frame, MatchInfo.map_path, map_size=Config.inferno_size)
+        faze_player_clicked = {faze_players[i]: False for i in range(len(faze_players))}
+        navi_player_clicked = {navi_players[i]: False for i in range(len(navi_players))}
+        player_chosen = []
+
+    elif selected_metric == metrics[4]:
+        if map_fig is None:
+            map_fig = create_map(frame, MatchInfo.map_path, map_size=Config.inferno_size)
+        faze_player_clicked = {faze_players[i]: False for i in range(len(faze_players))}
+        navi_player_clicked = {navi_players[i]: False for i in range(len(navi_players))}
+        player_chosen = []
+
+    elif selected_metric == metrics[5]:
+        if map_fig is None:
+            map_fig = create_map(frame, MatchInfo.map_path, map_size=Config.inferno_size)
+        faze_player_clicked = {faze_players[i]: False for i in range(len(faze_players))}
+        navi_player_clicked = {navi_players[i]: False for i in range(len(navi_players))}
+        player_chosen = []
+
 
     else:
         ValueError("Invalid metric!")
@@ -153,10 +188,10 @@ def create_major_buttons(frame, image_path, size):
     return major_label
 
 
-def create_player_buttons(frame, image_paths, size, x, y, metric_combobox):
+def create_player_buttons(frame, image_paths, size, x, y, metric_combobox, player_list):
     player_buttons = []
     for i, path in enumerate(image_paths):
-        player_id = path[11:-4]
+        player_id = player_list[i]
         icon = create_circle_image(path, size)
         player_button_frame = tk.Label(frame, relief="solid", image=icon, text=player_id, compound=tk.TOP,
                                        padx=0, pady=0,
@@ -172,11 +207,11 @@ def create_player_buttons(frame, image_paths, size, x, y, metric_combobox):
 
 
 def create_slider(frame, metrics_category):
-    slider_label = ttk.Label(frame, text="Select one metirc to visualize: ",
-                             font=Config.team_font, foreground=Config.fg_color, background=Config.bg_color)
+    slider_label = Label(frame, text="Select one metirc to visualize: ",
+                         font=Config.team_font, foreground=Config.fg_color, background=Config.bg_color)
     slider_label.place(x=Config.window_height // 2 - 250, y=Config.window_width // 6 + 20)
     selected_metric = tk.StringVar()
-    metric_combobox = ttk.Combobox(frame, textvariable=selected_metric, values=metrics_category, state='readonly')
+    metric_combobox = Combobox(frame, textvariable=selected_metric, values=metrics_category, state='readonly')
     metric_combobox.place(x=Config.window_height // 2 + 100, y=Config.window_width // 6 + 25)
 
     metric_combobox.bind("<<ComboboxSelected>>",
@@ -186,10 +221,11 @@ def create_slider(frame, metrics_category):
 
 if __name__ == '__main__':
     window = tk.Tk()
-    window.title("Circular Icon Window")
+    window.title("Anterwep Major 2020 The Final Visualization")
     center_window(window, Config.window_height, Config.window_width)
     window.configure(bg=Config.bg_color)
 
+    map_fig = create_overview(window, MatchInfo.overview_path)
     major_image_label = create_major_buttons(window, MatchInfo.major_path, size=[500, 140])
 
     result_label = tk.Label(window, text="", font=Config.player_font, fg=Config.fg_color, bg=Config.bg_color)
@@ -201,8 +237,8 @@ if __name__ == '__main__':
     navi_team_label = create_team_buttons(window, "Na'Vi", MatchInfo.navi_logo_path, Config.team_icon_size, 1020, 0)
 
     faze_player_labels = create_player_buttons(window, MatchInfo.faze_paths, Config.player_icon_size,
-                                               100, 230, metric_slider)
+                                               100, 230, metric_slider, faze_players)
     navi_player_labels = create_player_buttons(window, MatchInfo.navi_paths, Config.player_icon_size,
-                                               1070, 230, metric_slider)
+                                               1070, 230, metric_slider, navi_players)
 
     window.mainloop()
