@@ -4,7 +4,7 @@
 
 block_cipher = None
 
-a = Analysis(['new_window.py'],
+a = Analysis(['main.py'],
              pathex=['.'],
              binaries=[],
              datas=[
